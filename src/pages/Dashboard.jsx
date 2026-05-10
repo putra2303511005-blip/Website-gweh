@@ -157,10 +157,13 @@ const handleAiChat = async (e) => {
     setIsAiLoading(true);
 
     try {
-      // 1. MASUKKAN API KEY ANDA DI SINI
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-VITE_GEMINI_API_KEY="AIzaSyB0dtYmwq171BTNwvFXdsXpQYx4PaFMLYk"
+      // 1. Ambil API KEY dari environment variable
+      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
       
+      // Validasi kecil agar tidak error jika key kosong
+      if (!API_KEY) {
+        throw new Error("API Key tidak ditemukan di pengaturan Vercel/ENV");
+      }
       // 2. KITA GUNAKAN MODEL TERBARU DARI DAFTAR ANDA
       const MODEL_NAME = "gemini-2.5-flash"; 
       
