@@ -1,0 +1,42 @@
+/* Mengimpor dasar-dasar Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   GLOBAL STYLING UNTUK FEEDLOT PRO
+========================================= */
+
+@layer base {
+  html {
+    /* Menggunakan font sistem yang modern dan bersih */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    /* Menerapkan warna background dasar dan membuat teks lebih tajam */
+    @apply bg-slate-50 text-slate-800 antialiased;
+  }
+}
+
+/* =========================================
+   CUSTOM SCROLLBAR (Tampilan Premium)
+========================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc; /* slate-50 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
