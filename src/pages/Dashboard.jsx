@@ -159,7 +159,7 @@ const handleAiChat = async (e) => {
     try {
       // 1. MASUKKAN API KEY ANDA DI SINI
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-VITE_GEMINI_API_KEY="AIzaSyCWFa77uL-TxjZ41C11Myh_85LtFH1n8BM"
+VITE_GEMINI_API_KEY="AIzaSyB0dtYmwq171BTNwvFXdsXpQYx4PaFMLYk"
       
       // 2. KITA GUNAKAN MODEL TERBARU DARI DAFTAR ANDA
       const MODEL_NAME = "gemini-2.5-flash"; 
