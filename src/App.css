@@ -1,8 +1,3 @@
-/* Mengimpor dasar-dasar Tailwind CSS */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* =========================================
    GLOBAL STYLING UNTUK FEEDLOT PRO
 ========================================= */
@@ -12,11 +7,7 @@
     /* Menggunakan font sistem yang modern dan bersih */
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
-  
-  body {
-    /* Menerapkan warna background dasar dan membuat teks lebih tajam */
-    @apply bg-slate-50 text-slate-800 antialiased;
-  }
+
 }
 
 /* =========================================

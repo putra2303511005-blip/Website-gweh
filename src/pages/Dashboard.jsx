@@ -12,8 +12,7 @@ import {
 
 import RekamMedis from "../components/RekamMedis";
 import Statistik from "../components/Statistik";
-
-export default function Dashboard() {
+import FormPakan from "../components/formPakan";
   // --- 0. STATE AUTENTIKASI ---
   const [user, setUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
@@ -47,9 +46,6 @@ export default function Dashboard() {
   const [pakanLogs, setPakanLogs] = useState([]);
   const [isPakanModalOpen, setIsPakanModalOpen] = useState(false);
   const [pakanForm, setPakanForm] = useState({ jenisPakan: "Hijauan", jumlahKg: "", konsentrat: "", nutrisi: "Sedang" });
-  const [edukasiVideos, setEdukasiVideos] = useState([]);
-  const [isReelModalOpen, setIsReelModalOpen] = useState(false);
-  const [reelForm, setReelForm] = useState({ title: "", desc: "", url: "" });
 
   const statusBadgeColors = {
     "Sehat": "bg-emerald-100 text-emerald-700",
@@ -90,11 +86,7 @@ export default function Dashboard() {
     const qPakan = query(collection(db, "pakan"), where("userId", "==", user.uid), orderBy("tanggal", "desc"), limit(50));
     const unsubPakan = onSnapshot(qPakan, (snap) => setPakanLogs(snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
 
-    // Data Reels Edukasi (Global)
-    const qReels = query(collection(db, "reels"), orderBy("createdAt", "desc"));
-    const unsubReels = onSnapshot(qReels, (snap) => setEdukasiVideos(snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
-
-    return () => { unsubSapi(); unsubTrans(); unsubStats(); unsubPakan(); unsubReels(); };
+    return () => { unsubSapi(); unsubTrans(); unsubStats(); unsubPakan() };
   }, [user]);
 
   // --- LOGIKA SAPI UTAMA (DARI KODE ASLI) ---
@@ -226,9 +218,6 @@ export default function Dashboard() {
         <div className="bg-white p-10 rounded-3xl shadow-xl text-center max-w-md w-full"><h1 className="text-3xl font-extrabold text-slate-800">Feedlot Pro</h1><button onClick={async () => await signInWithPopup(auth, new GoogleAuthProvider())} className="mt-8 w-full bg-slate-50 border border-slate-200 font-bold py-3 px-4 rounded-xl shadow-sm hover:bg-slate-100">Login Google</button></div>
     </div>
   );
-
-  return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-800">
       
       {/* SIDEBAR */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex md:flex-col shadow-sm z-20">
@@ -253,15 +242,6 @@ export default function Dashboard() {
           <button onClick={async () => await signOut(auth)} className="w-full flex justify-center items-center gap-2 px-4 py-2.5 text-rose-600 rounded-xl hover:bg-rose-50 font-bold"><LogOut size={18}/> Logout</button>
         </div>
       </aside>
-
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white border-b flex items-center justify-between px-8 z-10">
-          <h2 className="text-lg font-bold text-slate-800 capitalize">{activeTab.replace('dashboard', 'Dashboard Ternak')}</h2>
-          {activeTab === 'edukasi' && <button onClick={() => setIsReelModalOpen(true)} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-1.5 rounded-lg flex gap-2 font-bold text-sm"><Video size={16}/> Unggah Reel</button>}
-        </header>
-
-        <div className="flex-1 overflow-auto p-6 md:p-8">
           
           {/* ================= TAB 1: DASHBOARD SAPI ================= */}
           {activeTab === 'dashboard' && (
@@ -399,31 +379,6 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ================= TAB 5: FARM REELS ================= */}
-          {activeTab === 'edukasi' && (
-            <div className="h-[calc(100vh-10rem)] flex justify-center">
-              <div className="h-full w-full max-w-sm bg-black rounded-[2rem] border-8 border-slate-800 shadow-xl overflow-hidden relative">
-                <div className="h-full w-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
-                  {edukasiVideos.map((video) => (
-                    <div key={video.id} className="h-full w-full snap-start relative bg-slate-900 flex items-center justify-center">
-                      <video src={video.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-80" />
-                      <div className="absolute right-3 bottom-24 flex flex-col gap-4 items-center z-10">
-                        <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full"><Heart size={20} fill="white"/></button>
-                        <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full"><MessageCircle size={20} className="text-white"/></button>
-                      </div>
-                      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
-                        <h3 className="text-white font-bold mb-1">{video.title}</h3>
-                        <p className="text-white/80 text-xs line-clamp-2">{video.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </main>
-
       {/* --- MODAL TAMBAH/EDIT SAPI (LOGIKA ASLI DIKEMBALIKAN) --- */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -475,22 +430,5 @@ export default function Dashboard() {
             </form>
           </div>
         </div>
-      )}
-
-      {/* --- MODAL UNGGAH REEL --- */}
-      {isReelModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl">
-            <div className="flex justify-between items-center mb-4"><h3 className="text-lg font-bold flex items-center gap-2"><Video className="text-rose-600" size={20}/> Unggah Reel</h3><button onClick={() => setIsReelModalOpen(false)}><X/></button></div>
-            <form onSubmit={handleSubmitReel} className="space-y-4">
-              <input type="text" placeholder="Judul Video" className="w-full border p-3 rounded-xl font-bold bg-slate-50" value={reelForm.title} onChange={e => setReelForm({...reelForm, title: e.target.value})} required />
-              <input type="url" placeholder="URL Video (mp4)" className="w-full border p-3 rounded-xl text-sm bg-slate-50" value={reelForm.url} onChange={e => setReelForm({...reelForm, url: e.target.value})} required />
-              <textarea placeholder="Deskripsi..." className="w-full border p-3 rounded-xl text-sm bg-slate-50" rows="2" value={reelForm.desc} onChange={e => setReelForm({...reelForm, desc: e.target.value})} required></textarea>
-              <button disabled={isLoading} className="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold">Posting</button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+      );
+      }
